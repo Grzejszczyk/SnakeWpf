@@ -1,0 +1,55 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using System.Windows.Threading;
+
+namespace SnakeWpf
+{
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            gameTickTimer.Tick += GameTickTimer_Tick;
+
+        }
+        private void UpdateGameStatus()
+        {
+            Score.Content = currentScore;
+        }
+        private void Start(object sender, RoutedEventArgs e)
+        {
+            Score.Content = 0;
+            DrawGameArea();
+            StartNewGame();
+            GameArea.Background = null;
+            GameArea.Focus();
+        }
+
+        private void Pause(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Reset(object sender, RoutedEventArgs e)
+        {
+
+        }
+    }
+}
