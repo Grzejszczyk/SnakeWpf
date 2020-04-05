@@ -9,7 +9,6 @@
         Background="LightGray"
         Height="480" Width="555"
         ResizeMode="NoResize"
-        ContentRendered="Window_ContentRendered"
         KeyUp="Window_KeyUp">
     <Grid>
         <Grid.ColumnDefinitions>

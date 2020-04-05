@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using System.Windows;
 using System.IO;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace SnakeWpf
 {
@@ -51,7 +52,42 @@ namespace SnakeWpf
             //Because URL Pixabay doestn't work I'm converting from previewURL to 640 picture.
             url = url.Remove(url.Length - 7) + pixabayResponse.hits[imageNo].webformatWidth + ".jpg";
 
+            //Convert to bitmap: But for this app not necesarry.
             ib.ImageSource = new BitmapImage(new Uri(url));
+
+            //Background can be set from BitmapImage. BUT Exercice says BITMAP (not BitmapImage), so below conversion
+            BitmapImage bi = new BitmapImage(new Uri(url));
+
+            //Below converting BitmapImage -> Bitmap -> BitmapImage (becouse of instruction in exercise)
+            //For setting Canvas Background it's not required.
+            //Seting BITMAP to canvas bacground by uncomment below code.
+
+            //ib.ImageSource = ConvertToBM(bm(bi));
+
+            BitmapImage ConvertToBM(Bitmap src)
+            {
+                MemoryStream ms = new MemoryStream();
+                ((System.Drawing.Bitmap)src).Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+                BitmapImage image = new BitmapImage();
+                image.BeginInit();
+                ms.Seek(0, SeekOrigin.Begin);
+                image.StreamSource = ms;
+                image.EndInit();
+                return image;
+            }
+
+            Bitmap bm(BitmapImage bitmapImage)
+            {
+                using (MemoryStream outStream = new MemoryStream())
+                {
+                    BitmapEncoder enc = new BmpBitmapEncoder();
+                    enc.Frames.Add(BitmapFrame.Create(bitmapImage));
+                    enc.Save(outStream);
+                    Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+                    return new Bitmap(bitmap);
+                };
+            }
+
             return ib;
         }
     }

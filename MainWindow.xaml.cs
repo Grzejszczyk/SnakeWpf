@@ -39,17 +39,6 @@ namespace SnakeWpf
             DrawGameArea();
             StartNewGame();
             GameArea.Background = null;
-            GameArea.Focus();
-        }
-
-        private void Pause(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Reset(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }
