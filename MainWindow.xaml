@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="SnakeWPF"
         Background="LightGray"
-        Height="480" Width="555"
+        Height="480" Width="565"
         ResizeMode="NoResize"
         KeyUp="Window_KeyUp">
     <Grid>
@@ -32,9 +32,11 @@
             </Canvas>
         </Border>
 
-        <Label HorizontalAlignment="Left" VerticalAlignment="Center" Height="26" Width="42" Grid.Column="3" Grid.Row="1" Margin="5,0,0,0" Content="Score:" />
+        <Label HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="3" Grid.Row="1" Margin="5,0,0,0" Content="Score:" />
         <Label x:Name="Score" Content="0" HorizontalAlignment="Left" Margin="42,0,0,0" VerticalAlignment="Center" Grid.Column="3" Grid.Row="1" />
 
         <Button Grid.Column="3" Grid.Row="2" Height="40" Width="110" Margin="0,30,0,0" VerticalAlignment="Top" Content="Start" Click="Start" FontWeight="Bold" />
+
+        <TextBlock x:Name="textWrapGameOver" Grid.Row="4" Grid.Column="3" Height="85" Width="100"  Margin="0,30,0,0" TextWrapping="Wrap" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" TextAlignment="Center" VerticalAlignment="Top"></TextBlock>
     </Grid>
 </Window>

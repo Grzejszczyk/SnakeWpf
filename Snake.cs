@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -19,7 +20,7 @@ namespace SnakeWpf
         public enum SnakeDirection { Left, Right, Up, Down };
         private SnakeDirection snakeDirection = SnakeDirection.Right;
         private int snakeLength;
-        const int SnakeSquareSize = 20;
+        const int SnakePartSize = 20;
         const int SnakeStartLength = 3;
 
         const int SnakeStartSpeed = 400;
@@ -45,8 +46,8 @@ namespace SnakeWpf
             {
                 Rectangle rect = new Rectangle
                 {
-                    Width = SnakeSquareSize,
-                    Height = SnakeSquareSize,
+                    Width = SnakePartSize,
+                    Height = SnakePartSize,
                 };
 
                 GameArea.Children.Add(rect);
@@ -54,18 +55,18 @@ namespace SnakeWpf
                 Canvas.SetLeft(rect, nextX);
 
                 nextIsOdd = !nextIsOdd;
-                nextX += SnakeSquareSize;
+                nextX += SnakePartSize;
                 if (nextX >= GameArea.ActualWidth)
                 {
                     nextX = 0;
-                    nextY += SnakeSquareSize;
+                    nextY += SnakePartSize;
                     rowCounter++;
                     nextIsOdd = (rowCounter % 2 != 0);
                 }
                 if (nextY >= GameArea.ActualHeight) { doneDrawingBackground = true; }
             }
         }
-        private void DrawSnake()
+        private void DrawSnakeBody()
         {
             foreach (SnakePart snakePart in snakeParts)
             {
@@ -73,8 +74,8 @@ namespace SnakeWpf
                 {
                     snakePart.UiElement = new Rectangle()
                     {
-                        Width = SnakeSquareSize,
-                        Height = SnakeSquareSize,
+                        Width = SnakePartSize,
+                        Height = SnakePartSize,
                         Fill = (snakePart.IsHead ? snakeHeadBrush : snakeBodyBrush)
                     };
 
@@ -105,16 +106,16 @@ namespace SnakeWpf
             switch (snakeDirection)
             {
                 case SnakeDirection.Left:
-                    nextX -= SnakeSquareSize;
+                    nextX -= SnakePartSize;
                     break;
                 case SnakeDirection.Right:
-                    nextX += SnakeSquareSize;
+                    nextX += SnakePartSize;
                     break;
                 case SnakeDirection.Up:
-                    nextY -= SnakeSquareSize;
+                    nextY -= SnakePartSize;
                     break;
                 case SnakeDirection.Down:
-                    nextY += SnakeSquareSize;
+                    nextY += SnakePartSize;
                     break;
             }
 
@@ -124,7 +125,7 @@ namespace SnakeWpf
                 IsHead = true
             });
 
-            DrawSnake();
+            DrawSnakeBody();
             DoCollisionCheck();
         }
         private void GameTickTimer_Tick(object sender, EventArgs e)
@@ -133,6 +134,8 @@ namespace SnakeWpf
         }
         private void StartNewGame()
         {
+            // Clear Game OverContent label.
+            textWrapGameOver.Text = "";
             // Remove potential dead snake parts and leftover food...
             foreach (SnakePart snakeBodyPart in snakeParts)
             {
@@ -145,10 +148,10 @@ namespace SnakeWpf
             currentScore = 0;
             snakeLength = SnakeStartLength;
             snakeDirection = SnakeDirection.Right;
-            snakeParts.Add(new SnakePart() { Position = new Point(SnakeSquareSize * 5, SnakeSquareSize * 5) });
+            snakeParts.Add(new SnakePart() { Position = new Point(SnakePartSize * 5, SnakePartSize * 5) });
             gameTickTimer.Interval = TimeSpan.FromMilliseconds(SnakeStartSpeed);
 
-            DrawSnake();
+            DrawSnakeBody();
             DrawSnakeFood();
 
             // Start:     
@@ -156,10 +159,10 @@ namespace SnakeWpf
         }
         private Point GetNextFoodPosition()
         {
-            int maxX = (int)(GameArea.ActualWidth / SnakeSquareSize);
-            int maxY = (int)(GameArea.ActualHeight / SnakeSquareSize);
-            int foodX = rnd.Next(0, maxX) * SnakeSquareSize;
-            int foodY = rnd.Next(0, maxY) * SnakeSquareSize;
+            int maxX = (int)(GameArea.ActualWidth / SnakePartSize);
+            int maxY = (int)(GameArea.ActualHeight / SnakePartSize);
+            int foodX = rnd.Next(0, maxX) * SnakePartSize;
+            int foodY = rnd.Next(0, maxY) * SnakePartSize;
 
             foreach (SnakePart snakePart in snakeParts)
             {
@@ -174,8 +177,8 @@ namespace SnakeWpf
             Point foodPosition = GetNextFoodPosition();
             snakeFood = new Ellipse()
             {
-                Width = SnakeSquareSize,
-                Height = SnakeSquareSize,
+                Width = SnakePartSize,
+                Height = SnakePartSize,
                 Fill = foodBrush
             };
             GameArea.Children.Add(snakeFood);
@@ -246,17 +249,21 @@ namespace SnakeWpf
             DrawSnakeFood();
             UpdateGameStatus();
 
-            //Preparing collection of PixabayResponse
-            ip.ImageDataPickerMethod();
-
-            //Saving random image (randomizing inside below method)
+            //Preparing collection of PixabayResponse - async
+            //Saving random image (randomizing inside below method) - async
             //Saved picture setting as canvas background
+            ChangeBackgroundAsync();
+        }
+        async Task ChangeBackgroundAsync()
+        {
+            await Task.Run(() => ip.ImageDataPickerMethod());
             GameArea.Background = ip.SaveImage();
         }
         private void EndGame()
         {
             gameTickTimer.IsEnabled = false;
-            MessageBox.Show("Game over! Press Start button & try again.", "SnakeWPF");
+            textWrapGameOver.Text = "Game over! Press Start button, try again.";
+            //MessageBox.Show("Game over! Press Start button & try again.", "SnakeWPF");
         }
     }
 }

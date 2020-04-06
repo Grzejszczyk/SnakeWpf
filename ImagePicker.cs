@@ -58,6 +58,12 @@ namespace SnakeWpf
             //Background can be set from BitmapImage. BUT Exercice says BITMAP (not BitmapImage), so below conversion
             BitmapImage bi = new BitmapImage(new Uri(url));
 
+
+            //
+            //Bitmap Exercise Task below:
+            //
+
+
             //Below converting BitmapImage -> Bitmap -> BitmapImage (becouse of instruction in exercise)
             //For setting Canvas Background it's not required.
             //Seting BITMAP to canvas bacground by uncomment below code.
